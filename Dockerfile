@@ -4,7 +4,7 @@ FROM linuxkit/kernel:${KERNEL_VERSION} AS ksrc
 # https://hub.docker.com/r/linuxkit/alpine/tags
 FROM linuxkit/alpine:3fdc49366257e53276c6f363956a4353f95d9a81 AS builder
 ARG KERNEL_VERSION
-# Taken from linuxkit's kernel build Dockerfile
+# Taken from https://github.com/linuxkit/linuxkit/blob/master/kernel/Dockerfile#L2
 RUN apk update && apk add \
     argp-standalone \
     automake \
