@@ -70,6 +70,7 @@ RUN mkdir /kmod/ \
 #FROM scratch
 FROM alpine:3.10
 LABEL maintainer="@singe at SensePost <research@sensepost.com>"
+LABEL repository="https://github.com/singe/linuxkit-mac80211_hwsim"
 ENTRYPOINT []
 CMD []
 WORKDIR /
