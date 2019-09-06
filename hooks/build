@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+echo "------ HOOK START - BUILD -------"
+
+# Fetch latest linuxkit kernels
+curl https://raw.githubusercontent.com/linuxkit/linuxkit/master/kernel/Makefile -o Makefile
+
+# Parse for versions & build for each
+for VER in $(grep -o "call kernel,[0-9\.x,]*\$(EXTRA)" Makefile|sort -u|cut -d, -f2); do
+  docker build --build-arg KERNEL_VERSION=$VER -t $DOCKER_REPO:$VER .
+  docker push $DOCKER_REPO:$VER
+
+  # Tag .x version
+  docker tag $DOCKER_REPO:$VER $DOCKER_REPO:$(echo $VER|cut -d. -f1,2).x
+  docker push $DOCKER_REPO:$(echo $VER|cut -d. -f1,2).x
+done
+
+echo "------ HOOK END - BUILD -------"
