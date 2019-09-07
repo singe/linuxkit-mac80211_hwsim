@@ -46,9 +46,13 @@ WORKDIR /usr/src/linux/
 # Copy current kernel build config and module symbol versions
 RUN cp ../linux-headers-${KERNEL_VERSION}-linuxkit/.config ../linux-headers-${KERNEL_VERSION}-linuxkit/Module.symvers .
 # Copy tne randstruct seed to match vermagic! https://github.com/torvalds/linux/commit/313dd1b629219db50cad532dba6a3b3b22ffe622
-RUN cp ../linux-headers-${KERNEL_VERSION}-linuxkit/scripts/gcc-plugins/randomize_layout_seed.h scripts/gcc-plugins/randomize_layout_seed.h \
-  && mkdir include/generated \
-  && cp ../linux-headers-${KERNEL_VERSION}-linuxkit/include/generated/randomize_layout_hash.h include/generated/randomize_layout_hash.h
+RUN if [ $(echo $KERNEL_VERSION|cut -d. -f1,2) == "4.9" ]; then \
+    echo "Skipping RANDSTRUCT for older 4.9 kernel"; \
+  else \
+    cp ../linux-headers-${KERNEL_VERSION}-linuxkit/scripts/gcc-plugins/randomize_layout_seed.h scripts/gcc-plugins/randomize_layout_seed.h \
+    && mkdir include/generated \
+    && cp ../linux-headers-${KERNEL_VERSION}-linuxkit/include/generated/randomize_layout_hash.h include/generated/randomize_layout_hash.h; \
+  fi
 
 # Add module options
 RUN echo "CONFIG_MAC80211_HWSIM=m" >> .config \
